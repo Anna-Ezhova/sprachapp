@@ -16,6 +16,11 @@ export class ExerciseController {
     return this.exercises[this.currentIndex];
   }
 
+  getExercise(index: number): Exercise | null {
+    return this.exercises[index] ?? null;
+  }
+
+
   submitAnswer(answerId: string): boolean {
     const isCorrect =
       answerId === this.getCurrentExercise().correctAnswerId;
@@ -31,9 +36,9 @@ export class ExerciseController {
     return isCorrect;
   }
 
-  next(): boolean {
-    this.currentIndex++;
-    return this.currentIndex < this.exercises.length;
+  hasNext(index: number): boolean {
+    this.currentIndex++
+    return index + 1 < this.exercises.length;
   }
 
   getResult() {

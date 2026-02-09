@@ -15,8 +15,9 @@ export function useExercise(user: User) {
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [finished, setFinished] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const exercise = controller.getCurrentExercise();
+  const exercise = controller.getExercise(currentIndex);
 
   function selectAnswer(answerId: string) {
     setSelectedAnswer(answerId);
@@ -33,9 +34,11 @@ export function useExercise(user: User) {
   function next() {
     setSelectedAnswer(null);
     setShowFeedback(false);
+    
 
-    const hasNext = controller.next();
-    if (!hasNext) {
+    if (controller.hasNext(currentIndex)) {
+      setCurrentIndex((i) => i + 1)
+    } else {
       setFinished(true);
     }
   }
