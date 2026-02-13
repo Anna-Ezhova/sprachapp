@@ -6,8 +6,7 @@ export default function Index() {
         <View style={styles.container}>
             <Text>Edit app/index.tsx to edit this screen.</Text>
 
-
-            <Link href="/exersize" asChild>
+            <Link href="/exercise" asChild>
                 <Pressable style={styles.button}>
                     <Text style={styles.buttonText}>Training starten</Text>
                 </Pressable>

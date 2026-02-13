@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { exercises } from "../data/exercises";
-// import { ExerciseController } from "@/logic/ExerciseController";
 import { User } from "@/data/user";
-import { ExerciseController } from "@/logic/ExersiseController";
+import { ExerciseController } from "@/logic/ExerciseController";
 
 export function useExercise(user: User) {
 
