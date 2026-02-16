@@ -96,10 +96,23 @@ export default function ProgressScreen() {
 
             {/* ---------- Statistik-Karten ---------- */}
             <View style={styles.grid}>
-                <ProgressStatCard label="Streak" value={`${streak} Tage`} hint="in Folge gelernt" />
-                <ProgressStatCard label="Lernzeit" value={`${Math.round(totalMinutes)} min`} hint="Gesamt" />
-                <ProgressStatCard label="Fragen" value={completed} hint="Abgeschlossen" />
-                <ProgressStatCard label="Richtig" value={correct} hint="Antworten" />
+                <ProgressStatCard
+                    label="Streak"
+                    value={`${streak} ${streak === 1 ? "Tag" : "Tage"}`}
+                    hint="in Folge gelernt"
+                />
+                <ProgressStatCard
+                    label="Lernzeit"
+                    value={`${Math.round(totalMinutes)} min`}
+                    hint="Gesamt" />
+                <ProgressStatCard
+                    label="Fragen"
+                    value={completed}
+                    hint="Abgeschlossen" />
+                <ProgressStatCard
+                    label="Richtig"
+                    value={correct}
+                    hint="Antworten" />
             </View>
 
             {/* ---------- Wochen-Chart ---------- */}
