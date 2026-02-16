@@ -1,4 +1,5 @@
-Testfall 1 - Übung starten
+#Testfall 1 - Übung starten
+
 | Feld         | Inhalt                                |
 | ------------ | ------------------------------------- |
 | Test-ID      | TC-01                                 |
@@ -9,7 +10,8 @@ Testfall 1 - Übung starten
 | Tatsächlich  | Erste Aufgabe wird korrekt angezeigt  |
 | Status       | ✅ Bestanden                          |
 
-Testfall 2 - Training Starten
+#Testfall 2 - Training Starten
+
 | Feld         | Inhalt                                                |
 | ------------ | ----------------------------------------------------- |
 | Test-ID      | TC-02                                                 |
@@ -20,7 +22,8 @@ Testfall 2 - Training Starten
 | Tatsächlich  | Feedback wird korrekt angezeigt                       |
 | Status       | ✅ Bestanden                                          |
 
-Testfall 3 - Die nächste Aufgabe wird angezeigt
+#Testfall 3 - Die nächste Aufgabe wird angezeigt
+
 | Feld         | Inhalt                                  |
 | ------------ | --------------------------------------- |
 | Test-ID      | TC-03                                   |
@@ -31,7 +34,8 @@ Testfall 3 - Die nächste Aufgabe wird angezeigt
 | Tatsächlich  | Neue Aufgabe korrekt geladen            |
 | Status       | ✅ Bestanden                             |
 
-Testfall 4 - Feedback bei falschen Antwort erhalten
+
+#Testfall 4 - Feedback bei falschen Antwort erhalten
 
 | Feld         | Inhalt                             |
 | ------------ | ---------------------------------- |
@@ -43,7 +47,8 @@ Testfall 4 - Feedback bei falschen Antwort erhalten
 | Status       | ✅ Bestanden                       |
 
 
-Testfall 5 - Letzte Aufgabe beendet die Übung
+#Testfall 5 - Letzte Aufgabe beendet die Übung
+
 | Feld         | Inhalt                        |
 | ------------ | ----------------------------- |
 | Test-ID      | TC-05                         |
@@ -54,7 +59,7 @@ Testfall 5 - Letzte Aufgabe beendet die Übung
 | Status       | ✅ Bestanden                  |
 
 
-Testfall 6 - Fortschritt anzeigen
+#Testfall 6 - Fortschritt anzeigen
 
 | Feld         | Inhalt                                                          |
 | ------------ | --------------------------------------------------------------- |
