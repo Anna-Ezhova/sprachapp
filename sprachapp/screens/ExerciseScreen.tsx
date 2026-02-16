@@ -4,6 +4,13 @@ import { useUser } from "@/hooks/useUser";
 import { demoUser, User } from "@/data/user";
 import { Link } from "expo-router" 
 
+/**
+ * 
+ * This page is the main exersise page, it loads the exersise using useExersise 
+ * Hook
+ * If exersise is finished shows the result page
+ * 
+ */
 
 export default function ExerciseScreen() {
   //Loading DemoUSer from a variable, future: load from context
@@ -21,7 +28,7 @@ export default function ExerciseScreen() {
     result,
   } = useExercise(user);
 
-  // 🟢 RESULT VIEW
+  //  RESULT VIEW
   if (finished && result) {
     return (
       <View style={{ padding: 16 }}>
@@ -40,14 +47,14 @@ export default function ExerciseScreen() {
     );
   }
 
-  // 🟡 EXERCISE VIEW
+  //  EXERCISE VIEW
   return (
     <View style={{ padding: 16 }}>
-      <Text>{exercise.question}</Text>
-      <Text>{exercise.prompt}</Text>
+      <Text>{exercise!.question}</Text>
+      <Text>{exercise!.prompt}</Text>
 
 
-      {exercise.answers.map((a) => (
+      {exercise!.answers.map((a) => (
         <TouchableOpacity
           key={a.id}
           onPress={() => selectAnswer(a.id)}

@@ -2,6 +2,11 @@ import { Exercise } from "@/data/exercises";
 import { User } from "@/data/user";
 import { saveUser } from "@/services/userService";
 
+/*
+This Class manages the exersises as well as saves information to the User
+
+*/
+
 export class ExerciseController {
   private currentIndex = 0;
   private correctAnswers = 0;
