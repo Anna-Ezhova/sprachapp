@@ -79,13 +79,13 @@ function ExerciseContent({ user }: { user: User }) {
                     </View>
                 </Card>
 
-                <View style={styles.actionsRow}>
-                    <Link href="/" asChild>
-                        <Button title="Zurück zur Startseite" variant="secondary" />
-                    </Link>
-
+                <View style={styles.resultActions}>
                     <Link href="/progress" replace asChild>
                         <Button title="Fortschritt anzeigen" />
+                    </Link>
+
+                    <Link href="/" asChild>
+                        <Button title="Zurück zur Startseite" variant="secondary" />
                     </Link>
                 </View>
             </View>
@@ -263,8 +263,8 @@ const styles = StyleSheet.create({
         color: theme.colors.text,
     },
 
-    actionsRow: {
-        flexDirection: "row",
+    resultActions: {
+        marginTop: theme.space.md,
         gap: theme.space.sm,
     },
 

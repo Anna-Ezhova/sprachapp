@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-
 import { User } from "@/data/user";
 import { loadUser,} from "@/services/userService";
 
