@@ -4,8 +4,6 @@ import { Link } from "expo-router";
 export default function Index() {
     return (
         <View style={styles.container}>
-            <Text>Edit app/index.tsx to edit this screen.</Text>
-
             <Link href="/exercise" asChild>
                 <Pressable style={styles.button}>
                     <Text style={styles.buttonText}>Training starten</Text>
