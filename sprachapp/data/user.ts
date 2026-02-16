@@ -4,6 +4,8 @@ export type User = {
   progress: {
     completedExercises: number;
     correctAnswers: number;
+    daysInRow: number;
+    vocabsLearned: number;
   };
 };
 
@@ -13,7 +15,7 @@ export const demoUser = {
   progress: {
     completedExercises: 0,
     correctAnswers: 0,
-    daysinRow: 0,
+    daysInRow: 0,
     vocabsLearned: 0
   },
 };

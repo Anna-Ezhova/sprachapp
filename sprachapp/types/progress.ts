@@ -1,18 +1,16 @@
 export type DailyProgress = {
     date: string;        // "YYYY-MM-DD"
-    minutes: number;     // gelernte Minuten an diesem Tag
+    minutes: number;     // Lernminuten an diesem Tag
 };
 
-export type RecentActivity = {
+export type VocabAttempt = {
     id: string;
-    title: string;       // Titel der Übung
-    subtitle?: string;   // Themengebiet
-    completedAt: string; // ISO-Datum/Zeit
+    exerciseId: string;
+    chosenAnswerId: string;
+    completedAt: string;
+    minutes?: number;
 };
 
-export type ProgressSummary = {
-    language: string;
-    xp: number;
-    completedExercises: number;
-    recent: RecentActivity[];
+export type ProgressStore = {
+    attempts: VocabAttempt[];
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { exercises } from "../data/exercises";
 import { User } from "@/data/user";
 import { ExerciseController } from "@/logic/ExerciseController";
@@ -6,9 +6,13 @@ import { ExerciseController } from "@/logic/ExerciseController";
 export function useExercise(user: User) {
 
   console.log(user)
-  const [controller] = useState(
-    () => new ExerciseController(exercises, user)
-  );
+  const controllerRef = useRef<ExerciseController | null>(null);
+
+  if (!controllerRef.current) {
+    controllerRef.current = new ExerciseController(exercises, user);
+  }
+
+  const controller = controllerRef.current;
 
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -21,10 +25,10 @@ export function useExercise(user: User) {
     setSelectedAnswer(answerId);
   }
 
-  function checkAnswer() {
+  async function checkAnswer() {
     if (!selectedAnswer) return;
 
-    const result = controller.submitAnswer(selectedAnswer);
+    const result = await controller.submitAnswer(selectedAnswer);
     setIsCorrect(result);
     setShowFeedback(true);
   }

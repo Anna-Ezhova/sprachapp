@@ -3,8 +3,6 @@ import { loadUser } from "@/services/userService";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 
-
-
 export default function RootLayout() {
 
   const [user, setUser] = useState<User | null>(null);

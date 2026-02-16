@@ -49,6 +49,7 @@ export function WeeklyBarChart({
     const scale = getScale(rawMax, stepMinutes, maxLines);
 
     const sum = values.reduce((a, b) => a + b, 0);
+    const roundedSum = Math.round(sum);
 
     return (
         <View style={styles.wrapper}>
@@ -115,7 +116,7 @@ export function WeeklyBarChart({
                 </View>
             </View>
 
-            <Text style={styles.caption}>Summe (7 Tage): {sum} min</Text>
+            <Text style={styles.caption}>Summe: {roundedSum} min</Text>
         </View>
     );
 }

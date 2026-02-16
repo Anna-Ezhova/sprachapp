@@ -1,140 +1,211 @@
-import React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { View, Text, StyleSheet, ScrollView, Switch } from "react-native";
 
-import { demoProgress } from "@/data/demoProgress";
-import { dailyProgressDemo } from "@/data/dailyProgressDemo";
+import { useUser } from "@/hooks/useUser";
+import { loadProgress } from "@/services/progressService";
+import { loadUseDemoData, saveUseDemoData } from "@/services/appConfigService";
 
-import { buildLast7DaysSeries, computeStreak, sumMinutes } from "@/utils/progress";
+import { exercises } from "@/data/exercises";
 
-import { ProgressStatCard } from "@/components/ProgressStatCard";
+import { demoVocabAttempts } from "@/data/demoVocabAttempts";
+
+import { buildLast7DaysDailyFromAttempts, computeStreak, computeTotalMinutes } from "@/utils/progress";
 import { WeeklyBarChart } from "@/components/WeeklyBarChart";
+import { ProgressStatCard } from "@/components/ProgressStatCard";
+
+import { theme } from "@/theme/theme";
+import { Card } from "@/components/ui/Card";
 
 export default function ProgressScreen() {
-    const p = demoProgress;
+    const { user, loading } = useUser();
+    const [useDemo, setUseDemo] = useState(false);
+    const [store, setStore] = useState<{ attempts: any[] }>({ attempts: [] });
 
-    const last7Days = buildLast7DaysSeries(dailyProgressDemo);
-    const streak = computeStreak(dailyProgressDemo);
-    const totalMinutes = sumMinutes(dailyProgressDemo);
+    useEffect(() => {
+        loadUseDemoData().then(setUseDemo);
+    }, []);
+
+    useEffect(() => {
+        if (!user) return;
+
+        if (useDemo) {
+            setStore({ attempts: demoVocabAttempts });
+            return;
+        }
+
+        setStore({ attempts: [] });
+
+        loadProgress(user.id)
+            .then((s) => {
+                setStore({
+                    attempts: Array.isArray((s as any).attempts) ? (s as any).attempts : [],
+                });
+            })
+            .catch((err) => {
+                console.warn("loadProgress failed:", err);
+                setStore({ attempts: [] });
+            });
+    }, [user, useDemo]);
+
+    const attempts = store.attempts ?? [];
+    const limitedAttempts = attempts.slice(0, 5);
+
+    const last7Days = useMemo(
+        () => buildLast7DaysDailyFromAttempts(attempts),
+        [attempts]
+    );
+    const totalMinutes = computeTotalMinutes(attempts);
+    const streak = computeStreak(attempts);
+    const completed = attempts.length;
+
+    const correct = attempts.filter((a) => {
+        const ex = exercises.find((e) => e.id === a.exerciseId);
+        return ex ? a.chosenAnswerId === ex.correctAnswerId : false;
+    }).length;
+
+    if (loading || !user) return null;
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Dein Fortschritt</Text>
-            <Text style={styles.subtitle}>
-                Demo-Übersicht für {p.language} – basierend auf Beispiel-Daten.
-            </Text>
+        <ScrollView
+            style={styles.container}
+            contentContainerStyle={styles.content}
+            showsVerticalScrollIndicator={false}
+        >
+            <Text style={styles.title}>Fortschritt</Text>
+
+            <Card style={styles.topRow}>
+                <Text style={styles.muted}>Demo-Daten</Text>
+                <Switch
+                    value={useDemo}
+                    onValueChange={async (v) => {
+                        setUseDemo(v);
+                        await saveUseDemoData(v);
+                    }}
+                />
+            </Card>
 
             <View style={styles.grid}>
-                <ProgressStatCard
-                    label="Streak"
-                    value={`${streak} Tage`}
-                    hint="Tage in Folge gelernt"
-                />
-                <ProgressStatCard label="XP" value={p.xp} hint="Gesammelte Punkte" />
-                <ProgressStatCard
-                    label="Lernzeit"
-                    value={`${totalMinutes} min`}
-                    hint="Gesamt"
-                />
-                <ProgressStatCard
-                    label="Übungen"
-                    value={p.completedExercises}
-                    hint="Abgeschlossen"
-                />
+                <ProgressStatCard label="Streak" value={`${streak} Tage`} hint="in Folge gelernt" />
+                <ProgressStatCard label="Lernzeit" value={`${Math.round(totalMinutes)} min`} hint="Gesamt" />
+                <ProgressStatCard label="Fragen" value={completed} hint="Abgeschlossen" />
+                <ProgressStatCard label="Richtig" value={correct} hint="Antworten" />
             </View>
 
-            <View style={styles.section}>
+            <View style={styles.chartBlock}>
                 <WeeklyBarChart data={last7Days} />
             </View>
 
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Zuletzt erledigt</Text>
+                <Text style={styles.sectionTitle}>Zuletzt:</Text>
 
-                <FlatList
-                    data={p.recent}
-                    keyExtractor={(item) => item.id}
-                    ItemSeparatorComponent={() => <View style={styles.sep} />}
-                    renderItem={({ item }) => (
-                        <View style={styles.activityRow}>
-                            <View style={{ flex: 1 }}>
-                                <Text style={styles.activityTitle}>{item.title}</Text>
-                                {!!item.subtitle && (
-                                    <Text style={styles.activitySub}>{item.subtitle}</Text>
+                <View style={{ gap: theme.space.sm }}>
+                    {limitedAttempts.map((item) => {
+                        const ex = exercises.find((e) => e.id === item.exerciseId);
+
+                        const prompt = ex?.prompt ?? "Unbekannt";
+                        const chosen =
+                            ex?.answers.find((a) => a.id === item.chosenAnswerId)?.text ?? "—";
+                        const correct =
+                            ex?.answers.find((a) => a.id === ex?.correctAnswerId)?.text ?? "—";
+
+                        const isCorrect = ex ? item.chosenAnswerId === ex.correctAnswerId : false;
+
+                        return (
+                            <Card key={item.id}>
+                                <View style={styles.attemptRow}>
+                                    <Text style={styles.attemptPrompt}>{prompt}</Text>
+                                    <Text
+                                        numberOfLines={1}
+                                        style={[styles.badge, isCorrect ? styles.badgeOk : styles.badgeBad]}
+                                    >
+                                        {isCorrect ? "Richtig" : "Falsch"}
+                                    </Text>
+                                </View>
+
+                                <Text style={styles.muted}>Deine Antwort: {chosen}</Text>
+                                {!isCorrect && (
+                                    <Text style={styles.muted}>Richtig wäre: {correct}</Text>
                                 )}
-                            </View>
-                            <Text style={styles.activityDate}>
-                                {formatDateShort(item.completedAt)}
-                            </Text>
-                        </View>
-                    )}
-                />
+                            </Card>
+                        );
+                    })}
+                </View>
             </View>
-        </View>
+        </ScrollView>
     );
-}
-
-function formatDateShort(iso: string) {
-    const d = new Date(iso);
-    const dd = String(d.getDate()).padStart(2, "0");
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    return `${dd}.${mm}.`;
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
-        gap: 12,
-        backgroundColor: "#FAFAFA",
+        backgroundColor: theme.colors.bg,
+    },
+    content: {
+        padding: theme.space.lg,
+        paddingBottom: theme.space.xl,
     },
     title: {
-        fontSize: 26,
-        fontWeight: "800",
-        color: "#111",
+        ...theme.text.title,
+        color: theme.colors.text,
     },
-    subtitle: {
-        color: "#666",
-        marginBottom: 4,
+    topRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
     },
     grid: {
         flexDirection: "row",
         flexWrap: "wrap",
-        gap: 12,
+        gap: theme.space.md,
+        marginTop: theme.space.md,
+    },
+    chartBlock: {
+        marginTop: theme.space.md,
     },
     section: {
-        marginTop: 4,
-        gap: 8,
+        marginTop: theme.space.md,
+        gap: theme.space.sm,
     },
     sectionTitle: {
-        fontSize: 16,
-        fontWeight: "800",
-        color: "#111",
+        ...theme.text.section,
+        color: theme.colors.text,
     },
-    activityRow: {
+    attemptRow: {
         flexDirection: "row",
-        alignItems: "center",
-        paddingVertical: 10,
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        gap: theme.space.sm,
+    },
+    attemptPrompt: {
+        ...theme.text.body,
+        color: theme.colors.text,
+        fontWeight: "900",
+        flex: 1,
+        flexShrink: 1,
+    },
+    badge: {
+        fontSize: 12,
+        fontWeight: "900",
+        paddingVertical: 4,
         paddingHorizontal: 10,
-        borderWidth: 1,
-        borderColor: "#E6E6E6",
-        borderRadius: 12,
-        backgroundColor: "#FFF",
-        gap: 10,
+        borderRadius: theme.radius.pill,
+        overflow: "hidden",
+        flexShrink: 0,
     },
-    activityTitle: {
-        fontSize: 14,
-        fontWeight: "700",
-        color: "#111",
+    badgeText: {
+        flexShrink: 0,
     },
-    activitySub: {
-        fontSize: 12,
-        color: "#666",
-        marginTop: 2,
+    badgeOk: {
+        backgroundColor: theme.colors.subtle,
+        color: theme.colors.text,
     },
-    activityDate: {
-        fontSize: 12,
-        color: "#666",
+    badgeBad: {
+        backgroundColor: theme.colors.subtle,
+        color: theme.colors.text,
+        opacity: 0.7,
     },
-    sep: {
-        height: 10,
+    muted: {
+        color: theme.colors.muted,
+        marginTop: 4,
     },
 });
