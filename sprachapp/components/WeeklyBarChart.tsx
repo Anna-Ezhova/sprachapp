@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { DailyProgress } from "../types/progress";
+import { DailyProgress } from "@/types/progress";
 
 type Props = {
     // Erwartet 7 Punkte: ältester links, heute rechts

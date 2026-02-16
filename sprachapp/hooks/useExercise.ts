@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { exercises } from "../data/exercises";
+import { exercises } from "@/data/exercises";
 import { User } from "@/data/user";
 import { ExerciseController } from "@/logic/ExerciseController";
 
