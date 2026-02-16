@@ -1,3 +1,13 @@
+/* ---------- Typdefinition: Exercise ---------- */
+/*
+   Repräsentiert eine einzelne Übungsaufgabe.
+   Jede Aufgabe besteht aus:
+   - einer Fragestellung
+   - einem Prompt (Wort/Satz)
+   - vier Antwortmöglichkeiten
+   - der ID der korrekten Antwort
+*/
+
 export type Exercise = {
   id: string;
   question: string;
@@ -8,6 +18,14 @@ export type Exercise = {
   }[];
   correctAnswerId: string;
 };
+
+/* ---------- Übungsdaten (Demo-Fragen) ---------- */
+/*
+   Enthält 10 Beispielaufgaben:
+   - Wortübersetzungen (Deutsch ↔ Englisch)
+   - Satzergänzungen
+   Dient als Datenquelle für Training und Progress-Auswertung.
+*/
 
 export const exercises: Exercise[] = [
   {

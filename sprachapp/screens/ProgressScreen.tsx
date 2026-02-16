@@ -17,14 +17,21 @@ import { theme } from "@/theme/theme";
 import { Card } from "@/components/ui/Card";
 
 export default function ProgressScreen() {
+
+    /* ---------- User State ---------- */
     const { user, loading } = useUser();
+
+    /* ---------- Demo Toggle State ---------- */
     const [useDemo, setUseDemo] = useState(false);
     const [store, setStore] = useState<{ attempts: any[] }>({ attempts: [] });
 
+    /* ---------- Initial: Demo-Flag laden ---------- */
     useEffect(() => {
         loadUseDemoData().then(setUseDemo);
     }, []);
 
+    /* ---------- Progress-Daten laden ---------- */
+    // Reagiert auf User-Wechsel oder Demo-Toggle.
     useEffect(() => {
         if (!user) return;
 
@@ -33,7 +40,7 @@ export default function ProgressScreen() {
             return;
         }
 
-        setStore({ attempts: [] });
+        setStore({ attempts: [] }); // Reset vor Reload
 
         loadProgress(user.id)
             .then((s) => {
@@ -47,8 +54,9 @@ export default function ProgressScreen() {
             });
     }, [user, useDemo]);
 
+    /* ---------- Abgeleitete Daten ---------- */
     const attempts = store.attempts ?? [];
-    const limitedAttempts = attempts.slice(0, 5);
+    const limitedAttempts = attempts.slice(0, 5); // nur letzte 5 anzeigen
 
     const last7Days = useMemo(
         () => buildLast7DaysDailyFromAttempts(attempts),
@@ -63,6 +71,7 @@ export default function ProgressScreen() {
         return ex ? a.chosenAnswerId === ex.correctAnswerId : false;
     }).length;
 
+    /* ---------- Guard: Loading ---------- */
     if (loading || !user) return null;
 
     return (
@@ -73,6 +82,7 @@ export default function ProgressScreen() {
         >
             <Text style={styles.title}>Fortschritt</Text>
 
+            {/* ---------- Demo-Switch ---------- */}
             <Card style={styles.topRow}>
                 <Text style={styles.muted}>Demo-Daten</Text>
                 <Switch
@@ -84,6 +94,7 @@ export default function ProgressScreen() {
                 />
             </Card>
 
+            {/* ---------- Statistik-Karten ---------- */}
             <View style={styles.grid}>
                 <ProgressStatCard label="Streak" value={`${streak} Tage`} hint="in Folge gelernt" />
                 <ProgressStatCard label="Lernzeit" value={`${Math.round(totalMinutes)} min`} hint="Gesamt" />
@@ -91,10 +102,12 @@ export default function ProgressScreen() {
                 <ProgressStatCard label="Richtig" value={correct} hint="Antworten" />
             </View>
 
+            {/* ---------- Wochen-Chart ---------- */}
             <View style={styles.chartBlock}>
                 <WeeklyBarChart data={last7Days} />
             </View>
 
+            {/* ---------- Letzte Versuche ---------- */}
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Zuletzt:</Text>
 
@@ -135,6 +148,7 @@ export default function ProgressScreen() {
     );
 }
 
+/* ---------- Styles ---------- */
 const styles = StyleSheet.create({
     container: {
         flex: 1,

@@ -12,11 +12,9 @@ import { Button } from "@/components/ui/Button";
 
 export default function ExerciseScreen() {
 
-    // Loading DemoUser from a variable, future: load from context
-    // const user = demoUser
-
     const { user, loading } = useUser();
 
+    /* ---------- Ladezustand ---------- */
     if (loading) {
         return (
             <View style={styles.container}>
@@ -26,6 +24,7 @@ export default function ExerciseScreen() {
         );
     }
 
+    /* ---------- Kein Nutzer vorhanden ---------- */
     if (!user) {
         return (
             <View style={styles.container}>
@@ -41,6 +40,7 @@ export default function ExerciseScreen() {
     return <ExerciseContent user={user} />;
 }
 
+/* ---------- Trainings-Inhalt ---------- */
 function ExerciseContent({ user }: { user: User }) {
     const {
         exercise,
@@ -53,7 +53,7 @@ function ExerciseContent({ user }: { user: User }) {
         result,
     } = useExercise(user);
 
-    // 🟢 RESULT VIEW
+    /* ---------- Ergebnisansicht ---------- */
     if (finished && result) {
         const percent = Math.round((result.correct / result.total) * 100);
         return (
@@ -92,7 +92,7 @@ function ExerciseContent({ user }: { user: User }) {
         );
     }
 
-    // 🟡 EXERCISE VIEW
+    /* ---------- Übungsansicht ---------- */
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Training</Text>
@@ -136,17 +136,9 @@ function ExerciseContent({ user }: { user: User }) {
                     })}
                 </View>
 
-                {/*    <View style={styles.feedbackBox}>*/}
-                {/*        <Text style={styles.feedbackText}>*/}
-                {/*            {isCorrect ? "✅ Richtig" : "❌ Falsch"}*/}
-                {/*        </Text>*/}
-                {/*    </View>*/}
-                {/*)}*/}
-
                 <Button
                     title={showFeedback ? "Weiter" : "Antwort prüfen"}
                     onPress={showFeedback ? next : checkAnswer}
-                    // Optischer Disabled-State wie vorher (disabled war vorher am TouchableOpacity)
                     style={!selectedAnswer ? styles.disabled : undefined}
                 />
             </Card>
@@ -158,6 +150,7 @@ function ExerciseContent({ user }: { user: User }) {
     );
 }
 
+/* ---------- Styles ---------- */
 const styles = StyleSheet.create({
     container: {
         flex: 1,

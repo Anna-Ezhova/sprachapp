@@ -2,16 +2,28 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { DailyProgress } from "@/types/progress";
 
+/* ---------- Props: Dateneingang und Konfiguration ---------- */
+/*
+   Erwartet genau 7 Datenpunkte:
+   - ältester Tag links
+   - heutiger Tag rechts
+*/
 type Props = {
-    // Erwartet 7 Punkte: ältester links, heute rechts
     data: DailyProgress[];
-    height?: number; // Höhe der PlotArea (nur Balkenfläche)
-    stepMinutes?: number; // z.B. 10
-    maxLines?: number; // z.B. 5
+    height?: number;
+    stepMinutes?: number; // Schrittweite der Skalenlinien (z. B. 10 min)
+    maxLines?: number; // maximale Anzahl Skalenlinien (z. B. 5)
 };
 
-const GRID_COLOR = "#CFCFCF"; // Linien + Skalen-Text (sichtbar auf hellgrau)
+/* ---------- Konstanten für Diagramm-Optik ---------- */
+const GRID_COLOR = "#CFCFCF";
 
+/* ---------- Skalierungslogik für Y-Achse ---------- */
+/*
+   Ermittelt:
+   - maxValue: oberer Skalenwert (auf step gerundet)
+   - steps: Skalenwerte als Array (z. B. [10,20,30,40,50])
+*/
 function getScale(max: number, step: number, maxLines: number) {
     const roundedMax = Math.ceil(max / step) * step;
     const lines = Math.min(Math.max(roundedMax / step, 1), maxLines);
@@ -23,31 +35,39 @@ function getScale(max: number, step: number, maxLines: number) {
     };
 }
 
+/* ---------- Datums-Helper: Wochentags-Label aus ISO-Datum ---------- */
+/*
+   Wandelt "YYYY-MM-DD" in ein kurzes Wochentagslabel ("Mo", "Di", ...)
+   Hinweis: wir hängen "T00:00:00" an, damit der Wochentag stabil bleibt
+*/
 function weekdayLabelFromISO(isoDate: string): string {
-    // isoDate: "YYYY-MM-DD"
-    // lokale Zeit, aber fix auf Mitternacht, damit der Wochentag stabil ist
     const d = new Date(`${isoDate}T00:00:00`);
     const labels = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
     return labels[d.getDay()];
 }
 
+/* ---------- UI-Komponente: WeeklyBarChart ---------- */
 export function WeeklyBarChart({
                                    data,
                                    height = 120,
                                    stepMinutes = 10,
                                    maxLines = 5,
                                }: Props) {
-    // Paddings müssen zur Bar-Row passen, damit Grid & Balken exakt alignen.
+
+    /* ---------- Layout: Plot-Bereich und Innenhöhe ---------- */
     const PADDING_TOP = 6;
     const PADDING_BOTTOM = 0;
     const innerHeight = Math.max(height - PADDING_TOP - PADDING_BOTTOM, 1);
 
-    const values = data.map((p) => p.minutes);
+    /* ---------- Datenaufbereitung: Werte & Labels ---------- */
+        const values = data.map((p) => p.minutes);
     const labels = data.map((p) => weekdayLabelFromISO(p.date));
 
+    /* ---------- Y-Skala berechnen ---------- */
     const rawMax = Math.max(...values, 1);
     const scale = getScale(rawMax, stepMinutes, maxLines);
 
+    /* ---------- Summenanzeige ---------- */
     const sum = values.reduce((a, b) => a + b, 0);
     const roundedSum = Math.round(sum);
 
@@ -56,7 +76,8 @@ export function WeeklyBarChart({
             <Text style={styles.title}>Letzte 7 Tage (Minuten)</Text>
 
             <View style={styles.plotRow}>
-                {/* Y-Labels links */}
+
+                {/* ---------- Y-Achse: Skalenwerte links ---------- */}
                 <View style={[styles.yAxis, { height }]}>
                     {scale.steps.map((value) => {
                         const y = Math.round((value / scale.maxValue) * innerHeight);
@@ -71,9 +92,10 @@ export function WeeklyBarChart({
                     })}
                 </View>
 
-                {/* PlotArea (ein gemeinsamer hellgrauer Hintergrund) */}
+                {/* ---------- PlotArea: Balken + Grid ---------- */}
                 <View style={[styles.plotArea, { height }]}>
-                    {/* Bars */}
+
+                    {/* ---------- Balken: 7 Tage ---------- */}
                     <View style={styles.barsRow}>
                         {labels.map((label, idx) => {
                             const value = values[idx];
@@ -81,6 +103,7 @@ export function WeeklyBarChart({
                                 (value / scale.maxValue) * innerHeight
                             );
 
+                            // Key enthält Datum + Label, um stabile Eindeutigkeit zu gewährleisten
                             return (
                                 <View key={`${data[idx].date}-${label}`} style={styles.barItem}>
                                     <View style={[styles.bar, { height: barHeight }]} />
@@ -89,7 +112,7 @@ export function WeeklyBarChart({
                         })}
                     </View>
 
-                    {/* Grid-Layer über Balken */}
+                    {/* ---------- Grid: horizontale Linien über den Balken ---------- */}
                     <View pointerEvents="none" style={[styles.gridLayer, { height }]}>
                         {scale.steps.map((value) => {
                             const y = Math.round((value / scale.maxValue) * innerHeight);
@@ -104,7 +127,7 @@ export function WeeklyBarChart({
                 </View>
             </View>
 
-            {/* X-Achsen Labels */}
+            {/* ---------- X-Achse: Wochentags-Labels ---------- */}
             <View style={styles.labelsRow}>
                 <View style={styles.yAxisSpacer} />
                 <View style={styles.xLabels}>
@@ -121,6 +144,7 @@ export function WeeklyBarChart({
     );
 }
 
+/* ---------- Styles ---------- */
 const styles = StyleSheet.create({
     wrapper: {
         borderWidth: 1,

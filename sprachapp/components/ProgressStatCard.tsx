@@ -1,12 +1,18 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
+/* ---------- Typdefinition für Statistik-Karte ---------- */
+/*
+   Zeigt eine einzelne Kennzahl im Fortschrittsbereich an
+   (z. B. Streak, Lernzeit, Anzahl Fragen, richtige Antworten).
+*/
 type Props = {
     label: string;
     value: string | number;
     hint?: string;
 };
 
+/* ---------- UI-Komponente: ProgressStatCard ---------- */
 export function ProgressStatCard({ label, value, hint }: Props) {
     return (
         <View style={styles.card}>
@@ -17,6 +23,7 @@ export function ProgressStatCard({ label, value, hint }: Props) {
     );
 }
 
+/* ---------- Styles ---------- */
 const styles = StyleSheet.create({
     card: {
         borderWidth: 1,

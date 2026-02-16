@@ -1,13 +1,16 @@
+/* ---------- Typdefinition: User ---------- */
 export type User = {
   id: string;
   name: string;
   progress: {
-    completedExercises: number;
-    correctAnswers: number;
-    daysInRow: number;
-    vocabsLearned: number;
+    completedExercises: number; // Anzahl beantworteter Fragen
+    correctAnswers: number; // Anzahl korrekt beantworteter Fragen
+    daysInRow: number; // Lernstreak (aufeinanderfolgende Tage)
+    vocabsLearned: number; // Anzahl gelernter Vokabeln
   };
 };
+
+/* ---------- Demo-Nutzer ---------- */
 
 export const demoUser = {
   id: "demo-user-1",

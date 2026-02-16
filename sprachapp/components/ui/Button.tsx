@@ -10,12 +10,14 @@ import {
 } from "react-native";
 import { theme } from "@/theme/theme";
 
+/* ---------- Typdefinition für wiederverwendbaren Button ---------- */
 type Props = Omit<PressableProps, "style"> & {
     title: string;
     variant?: "primary" | "secondary";
     style?: StyleProp<ViewStyle> | ((state: PressableStateCallbackType) => StyleProp<ViewStyle>);
 };
 
+/* ---------- UI-Komponente: Button ---------- */
 export function Button({
                            title,
                            variant = "primary",
@@ -28,13 +30,14 @@ export function Button({
         <Pressable
             {...props}
             style={(state) => {
+
+                /* ---------- Interne Style-Zusammensetzung ---------- */
                 const baseStyles: StyleProp<ViewStyle> = [
                     styles.base,
                     isSecondary ? styles.secondary : styles.primary,
                     state.pressed && styles.pressed,
                 ];
 
-                // ✅ User style kann StyleProp ODER callback sein
                 const userStyles =
                     typeof style === "function" ? style(state) : style;
 
@@ -48,6 +51,7 @@ export function Button({
     );
 }
 
+/* ---------- Styles ---------- */
 const styles = StyleSheet.create({
     base: {
         paddingVertical: 10,

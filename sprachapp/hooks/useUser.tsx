@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 
 
 import { User } from "@/data/user";
-import { loadUser, saveUser } from "@/services/userService";
+import { loadUser,} from "@/services/userService";
 
 export function useUser() {
+
+  /* ---------- State ---------- */
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  /* ---------- Initiales Laden ---------- */
   useEffect(() => {
     loadUser().then((loadedUser) => {
       setUser(loadedUser);
@@ -15,14 +18,9 @@ export function useUser() {
     });
   }, []);
 
-  async function updateUser(updatedUser: User) {
-    setUser(updatedUser);
-    await saveUser(updatedUser);
-  }
-
+  /* ---------- Rückgabe ---------- */
   return {
     user,
     loading,
-    updateUser,
   };
 }

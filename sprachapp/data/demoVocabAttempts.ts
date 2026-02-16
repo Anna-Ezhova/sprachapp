@@ -1,16 +1,25 @@
 import { VocabAttempt } from "@/types/progress";
 
-/**
- * Demo: 04.02.2026 – 18.02.2026
- * - Pausentage: 06, 09, 11, 14
- * - Daily-Minuten (aus Attempts * 0.5)
- *   20 bis 60 Attempts pro Lerntag
- *
- * Exercises IDs "1".."10", Answer IDs "a".."d"
- */
+/* ---------- Demo-Daten: beantwortete Vokabel-Übungen ---------- */
+/*
+   Zeitraum: 04.02.2026 – 18.02.2026
+
+   Zweck:
+   - reproduzierbare Demo-Historie für Progress (Streak, Lernzeit, Weekly-Chart, letzte Versuche)
+   - Demo soll realistisch wirken (nicht jeden Tag gelernt)
+
+   Pausentage:
+   - 06.02., 09.02., 11.02., 14.02.
+
+   Hinweis zur Lernzeit:
+   - Lernzeit wird aus Attempts berechnet (Summe der minutes-Felder).
+   - Bei minutes=0.5 gilt: 20 Attempts = 10 Minuten, 60 Attempts = 30 Minuten.
+   - Annahme: Exercise-IDs sind "1".."10", Answer-IDs sind "a".."d".
+*/
 
 export const demoVocabAttempts: VocabAttempt[] = [
-    // ===== 2026-02-04 =====
+    /* ---------- Manuell definierter Starttag (04.02.) ---------- */
+    // Erste 20 Versuche sind ausgeschrieben, damit die Datei auch ohne Generator "lesbar" startet.
     { id: "d-2026-02-04-01", exerciseId: "1", chosenAnswerId: "a", minutes: 0.5, completedAt: "2026-02-04T18:00:00.000Z" },
     { id: "d-2026-02-04-02", exerciseId: "2", chosenAnswerId: "b", minutes: 0.5, completedAt: "2026-02-04T18:00:30.000Z" },
     { id: "d-2026-02-04-03", exerciseId: "3", chosenAnswerId: "a", minutes: 0.5, completedAt: "2026-02-04T18:01:00.000Z" },
@@ -32,51 +41,45 @@ export const demoVocabAttempts: VocabAttempt[] = [
     { id: "d-2026-02-04-19", exerciseId: "9", chosenAnswerId: "c", minutes: 0.5, completedAt: "2026-02-04T18:09:00.000Z" },
     { id: "d-2026-02-04-20", exerciseId: "10", chosenAnswerId: "a", minutes: 0.5, completedAt: "2026-02-04T18:09:30.000Z" },
 
-    // ===== 2026-02-05 (40 attempts => 20.0 min) =====
+    /* ---------- Generierte Tage (via Helper) ---------- */
+
     ...makeDay("2026-02-05", 40, 100),
 
-    // ===== 2026-02-06 PAUSE =====
+    // 2026-02-06: Pause
 
-    // ===== 2026-02-07 (30 attempts => 15.0 min) =====
     ...makeDay("2026-02-07", 30, 200),
 
-    // ===== 2026-02-08 (50 attempts => 25.0 min) =====
     ...makeDay("2026-02-08", 50, 300),
 
-    // ===== 2026-02-09 PAUSE =====
+    // 2026-02-09: Pause
 
-    // ===== 2026-02-10 (22 attempts => 11.0 min) =====
     ...makeDay("2026-02-10", 22, 400),
 
-    // ===== 2026-02-11 PAUSE =====
+    // 2026-02-11: Pause
 
-    // ===== 2026-02-12 (34 attempts => 17.0 min) =====
     ...makeDay("2026-02-12", 34, 500),
 
-    // ===== 2026-02-13 (28 attempts => 14.0 min) =====
     ...makeDay("2026-02-13", 28, 600),
 
-    // ===== 2026-02-14 PAUSE =====
+    // 2026-02-14: Pause
 
-    // ===== 2026-02-15 (24 attempts => 12.0 min) =====
     ...makeDay("2026-02-15", 24, 700),
 
-    // ===== 2026-02-16 (46 attempts => 23.0 min) =====
     ...makeDay("2026-02-16", 46, 800),
 
-    // ===== 2026-02-17 (20 attempts => 10.0 min) =====
     ...makeDay("2026-02-17", 20, 900),
 
-    // ===== 2026-02-18 (60 attempts => 30.0 min) =====
     ...makeDay("2026-02-18", 60, 1000),
 ];
 
-/**
- * Helper zum Generieren von N Attempts an einem Datum.
- * - offset sorgt dafür, dass IDs eindeutig bleiben.
- * - verteilt exerciseId zyklisch über 1..10
- * - chosenAnswerId zyklisch über a..d
- */
+/* ---------- Helper: Attempts für einen Tag generieren ---------- */
+/*
+   Erzeugt N Versuche am gegebenen Datum.
+   - offset sorgt für eindeutige IDs (damit Keys/Listen stabil bleiben)
+   - exerciseId rotiert zyklisch über 1..10 (damit alle Aufgaben vorkommen)
+   - chosenAnswerId rotiert zyklisch über a..d (bewusst simpel, reicht für Demo)
+   - Zeitstempel variiert leicht, damit nicht alle Attempts identisch wirken
+*/
 
 function makeDay(date: string, count: number, offset: number): VocabAttempt[] {
     const answerIds = ["a", "b", "c", "d"] as const;
@@ -84,11 +87,12 @@ function makeDay(date: string, count: number, offset: number): VocabAttempt[] {
 
     for (let i = 0; i < count; i++) {
         const n = offset + i;
-        const exerciseId = String((i % 10) + 1); // "1".."10"
+        const exerciseId = String((i % 10) + 1);
         const chosenAnswerId = answerIds[i % answerIds.length];
 
-        // Uhrzeit minimal variieren
-        const hh = String(10 + Math.floor(i / 12)).padStart(2, "0"); // ab 10:00
+        /* ---------- Pseudo-verteilte Uhrzeit ---------- */
+        // Keine echte Randomness: deterministisch, damit Demo reproduzierbar bleibt.
+        const hh = String(10 + Math.floor(i / 12)).padStart(2, "0");
         const mm = String((i * 2) % 60).padStart(2, "0");
         const ss = String((i * 5) % 60).padStart(2, "0");
 

@@ -5,7 +5,7 @@ import { ExerciseController } from "@/logic/ExerciseController";
 
 export function useExercise(user: User) {
 
-  console.log(user)
+  /* ---------- Controller-Initialisierung ---------- */
   const controllerRef = useRef<ExerciseController | null>(null);
 
   if (!controllerRef.current) {
@@ -14,6 +14,7 @@ export function useExercise(user: User) {
 
   const controller = controllerRef.current;
 
+  /* ---------- UI-Zustände ---------- */
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -21,10 +22,12 @@ export function useExercise(user: User) {
 
   const exercise = controller.getCurrentExercise();
 
+  /* ---------- Auswahl setzen ---------- */
   function selectAnswer(answerId: string) {
     setSelectedAnswer(answerId);
   }
 
+  /* ---------- Antwort prüfen ---------- */
   async function checkAnswer() {
     if (!selectedAnswer) return;
 
@@ -33,6 +36,7 @@ export function useExercise(user: User) {
     setShowFeedback(true);
   }
 
+  /* ---------- Nächste Aufgabe ---------- */
   function next() {
     setSelectedAnswer(null);
     setShowFeedback(false);
@@ -43,6 +47,7 @@ export function useExercise(user: User) {
     }
   }
 
+  /* ---------- Rückgabe an UI ---------- */
   return {
     exercise,
     selectedAnswer,
