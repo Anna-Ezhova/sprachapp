@@ -1,4 +1,4 @@
-#Testfall 1 - Übung starten
+## Testfall 1 - Übung starten
 
 | Feld         | Inhalt                                |
 | ------------ | ------------------------------------- |
@@ -10,7 +10,7 @@
 | Tatsächlich  | Erste Aufgabe wird korrekt angezeigt  |
 | Status       | ✅ Bestanden                          |
 
-#Testfall 2 - Training Starten
+## Testfall 2 - Training Starten
 
 | Feld         | Inhalt                                                |
 | ------------ | ----------------------------------------------------- |
@@ -22,7 +22,7 @@
 | Tatsächlich  | Feedback wird korrekt angezeigt                       |
 | Status       | ✅ Bestanden                                          |
 
-#Testfall 3 - Die nächste Aufgabe wird angezeigt
+## Testfall 3 - Die nächste Aufgabe wird angezeigt
 
 | Feld         | Inhalt                                  |
 | ------------ | --------------------------------------- |
@@ -35,7 +35,7 @@
 | Status       | ✅ Bestanden                             |
 
 
-#Testfall 4 - Feedback bei falschen Antwort erhalten
+## Testfall 4 - Feedback bei falschen Antwort erhalten
 
 | Feld         | Inhalt                             |
 | ------------ | ---------------------------------- |
@@ -47,7 +47,7 @@
 | Status       | ✅ Bestanden                       |
 
 
-#Testfall 5 - Letzte Aufgabe beendet die Übung
+## Testfall 5 - Letzte Aufgabe beendet die Übung
 
 | Feld         | Inhalt                        |
 | ------------ | ----------------------------- |
@@ -59,7 +59,7 @@
 | Status       | ✅ Bestanden                  |
 
 
-#Testfall 6 - Fortschritt anzeigen
+## Testfall 6 - Fortschritt anzeigen
 
 | Feld         | Inhalt                                                          |
 | ------------ | --------------------------------------------------------------- |
