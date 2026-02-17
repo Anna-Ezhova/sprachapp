@@ -1,41 +1,59 @@
-import { Text, View, StyleSheet, Pressable } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import { Link } from "expo-router";
+
+import { Button } from "@/components/ui/Button";
+import { theme } from "@/theme/theme";
 
 export default function Index() {
     return (
         <View style={styles.container}>
-            <Text>Edit app/index.tsx to edit this screen.</Text>
+            <Text style={styles.title}>Sprachlern-App</Text>
+            <Text style={styles.subtitle}>
+                Trainiere Vokabeln und verfolge deinen Fortschritt.
+            </Text>
 
-            <Link href="/exercise" asChild>
-                <Pressable style={styles.button}>
-                    <Text style={styles.buttonText}>Training starten</Text>
-                </Pressable>
-            </Link>
-            <Link href="/progress" asChild>
-                <Pressable style={styles.button}>
-                    <Text style={styles.buttonText}>Fortschritt öffnen</Text>
-                </Pressable>
-            </Link>
+            <View style={styles.actions}>
+                <Link href="/exercise" asChild>
+                    <Button title="Training starten" style={styles.fullWidth} />
+                </Link>
+
+                <Link href="/progress" asChild>
+                    <Button title="Fortschritt ansehen" variant="secondary" style={styles.fullWidth} />
+                </Link>
+            </View>
 
         </View>
     );
 }
 
+/* ---------- Styles ---------- */
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center",
-        gap: 16,
+        padding: theme.space.xl,
+        backgroundColor: theme.colors.bg,
+        gap: theme.space.lg,
     },
-    button: {
-        paddingVertical: 10,
-        paddingHorizontal: 14,
-        borderRadius: 10,
-        backgroundColor: "#111",
+
+    title: {
+        ...theme.text.title,
+        textAlign: "center",
+        color: theme.colors.text,
     },
-    buttonText: {
-        color: "#FFF",
-        fontWeight: "700",
+
+    subtitle: {
+        textAlign: "center",
+        color: theme.colors.muted,
+    },
+
+    actions: {
+        marginTop: theme.space.lg,
+        gap: theme.space.md,
+    },
+
+    fullWidth: {
+        width: "100%",
+        paddingVertical: 14,
     },
 });
