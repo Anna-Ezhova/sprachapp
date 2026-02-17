@@ -95,8 +95,6 @@ function ExerciseContent({ user }: { user: User }) {
     /* ---------- Übungsansicht ---------- */
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Training</Text>
-
             <Card style={styles.cardGap}>
                 <Text style={styles.question}>{exercise.question}</Text>
 
